@@ -762,14 +762,10 @@ static int ext4_xattr_ibody_find_entry(struct ext4_inode_ref *inode_ref,
 	 * If there is no extra inode space
 	 * set ext4_xattr_ibody_finder::s::not_found to true and return EOK
 	 */
-	if (!extra_isize) {
+	if (!extra_isize || !ext4_xattr_is_ibody_valid(inode_ref)) {
 		finder->s.not_found = true;
 		return EOK;
 	}
-
-	/* Check the validity of the buffer */
-	if (!ext4_xattr_is_ibody_valid(inode_ref))
-		return EIO;
 
 	iheader = EXT4_XATTR_IHDR(&fs->sb, inode_ref->inode);
 	finder->s.base = EXT4_XATTR_IFIRST(iheader);
